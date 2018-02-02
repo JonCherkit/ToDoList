@@ -5,6 +5,7 @@ const elementaryTask = class elementaryTask
 	constructor(descritpion)
 	{
 		this._description = descritpion;
+		this._done = false;
 	}
 
 	getDescription()
@@ -16,6 +17,17 @@ const elementaryTask = class elementaryTask
 	{
 		return(this._description === task._description);
 	}
+
+	isDone()
+	{
+		return(this._done);
+	}
+
+	done()
+	{
+		this._done = true;
+	}
+
 }
 
 const toDo = class toDo
@@ -35,13 +47,25 @@ const toDo = class toDo
 		//Créer un noeud <ul>
 		let node = document.createElement('UL');
 		//Pour chaque tache de la liste
+		const that = this;
 		this._list.forEach(element => {
+			//Créer un bouton
+			let btn = document.createElement('BUTTON');
+			// Texte du bouton
+			btn.innerText = "X";
+			//Ecouteur du bouton sur le clic
+			btn.addEventListener('click',function()
+			{
+				//Suppression de la tache
+				that.removeTask(element);
+			});
 			// créer un élément <li> courant
 			let li = document.createElement('LI');
 			// créer un noeud texte à partir de la description de la tache
-			let txt = document.createTextNode(element._description);
+			let txt = document.createTextNode(element._description+' - Terminé ? : '+element._done);
 			// Ajoute le noeud texte au noeud li 
 			li.appendChild(txt);
+			li.appendChild(btn);
 			// Ajoute le noeud txt+li au noeud ul
 			node.appendChild(li)
 		});
@@ -68,7 +92,15 @@ const toDo = class toDo
 		{
 			this._list.splice(this._list.indexOf(task),1);
 		}
+		this.refreshDisplay();
 		return(this);
+	}
+
+	refreshDisplay()
+	{
+		let display = document.querySelector('#toDoDisplay');
+		display.innerHTML = "";
+		display.appendChild(this.HtmlToDoList());
 	}
 
 	getNthTask(n)
@@ -94,7 +126,7 @@ document.addEventListener('DOMContentLoaded',function(){
 	//Affichage de la liste
 	display.appendChild(todo.HtmlToDoList());
 
-	//----------- Event Listener
+	//----------- Add Task Event Listener
 
 	//Trouve le noeud du bouton (#AddTaskButton) de la page Html
 	let button = document.querySelector('#AddTaskButton');
@@ -102,18 +134,18 @@ document.addEventListener('DOMContentLoaded',function(){
 	//Ecoute le noeud boutton
 	button.addEventListener('click',function(){
 		//Recupere la valeur du champs texte
-		let content = document.querySelector('#taskDescription').value;
+		let content = document.querySelector('#taskDescription');
 
 		//Créer une tache a partire de la valeur précedement recuperé
-		let task = new elementaryTask(content);
+		let task = new elementaryTask(content.value);
 
 		//Ajout de la tache à la liste
 		todo.addTask(task);
 
-		// Réinitialisation du contenu du noeud
-		display.innerHTML = "";
+		//Rafraichissement affichage
+		todo.refreshDisplay();
 
-		//Rafraichissement de l'affichage
-		display.appendChild(todo.HtmlToDoList());
-	})
+		//Vide le champs de saisi de tache
+		content.value = "";
+	});	
 });
