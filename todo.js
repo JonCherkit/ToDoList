@@ -34,7 +34,15 @@ const toDo = class toDo
 {
 	constructor()
 	{
-		this._list = []
+		this._list = [];
+		let tasks = JSON.parse(window.localStorage.getItem('todo'));
+		if(tasks.length > 0)
+		{
+			for(let i = 0; i < tasks.length; i++)
+			{
+				this._list.push(new elementaryTask(tasks[i]._description,tasks[i]._done));
+			}
+		}	
 	}
 
 	getToDoList()
@@ -108,6 +116,22 @@ const toDo = class toDo
 		return(this._list[n]);
 	}
 
+	//Créer et ajoute une liste de tache (pour tester)
+	feed()
+	{
+		//Création de taches
+		const task1 = new elementaryTask('Tondre la pelouse');
+		const task2 = new elementaryTask('Ramoner la cheminée',true);
+		const task3 = new elementaryTask('Prendre une pause (15mn)',true);
+		const task4 = new elementaryTask('épilier la tortue');
+
+		//Ajout des taches à la liste
+		this.addTask(task1);
+		this.addTask(task2);
+		this.addTask(task3);
+		this.addTask(task4);
+	}
+
 }
 
 class toDoIterable extends toDo
@@ -151,18 +175,6 @@ document.addEventListener('DOMContentLoaded',function(){
 	//Initialisation de la TodoList
 	let todo = new toDoIterable();
 
-	//Création de taches
-	const task1 = new elementaryTask('Tondre la pelouse');
-	const task2 = new elementaryTask('Ramoner la cheminée',true);
-	const task3 = new elementaryTask('Prendre une pause (15mn)',true);
-	const task4 = new elementaryTask('épilier la tortue');
-
-	//Ajout des taches à la liste
-	todo.addTask(task1);
-	todo.addTask(task2);
-	todo.addTask(task3);
-	todo.addTask(task4);
-
 	//Sélection de la zone d'affichage de la toDoList
 	let display = document.querySelector('#toDoDisplay');
 
@@ -179,7 +191,7 @@ document.addEventListener('DOMContentLoaded',function(){
 		//Recupere le noeud du champs texte
 		let content = document.querySelector('#taskDescription');
 
-		//Créer une tache a partire de la valeur précedement recuperé
+		//Créer une tache a partir de la valeur précedement recuperé
 		let task = new elementaryTask(content.value);
 
 		//Ajout de la tache à la liste
@@ -199,4 +211,10 @@ document.addEventListener('DOMContentLoaded',function(){
 	document.querySelector('#achievedButton').addEventListener('click',() => todo.getTaskByStatus(true));
 	//Ecoute le noeud boutton 'displayAllButton'
 	document.querySelector('#displayAllButton').addEventListener('click',() => todo.refreshDisplay());
+
+	//------ Gestion AppCache
+	window.addEventListener('beforeunload',function(){
+		window.localStorage.setItem('todo',todo.stringify());
+	});
+	
 });
