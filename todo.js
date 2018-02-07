@@ -132,6 +132,11 @@ const toDo = class toDo
 		this.addTask(task4);
 	}
 
+	stringify()
+	{
+		return(JSON.parse(this));
+	}
+
 }
 
 class toDoIterable extends toDo
