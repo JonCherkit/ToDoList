@@ -71,10 +71,11 @@ const toDo = class toDo
 			let li = document.createElement('LI');
 			// créer un noeud texte à partir de la description de la tache
 			let txt = document.createTextNode(element._description+' - Terminé ? : '+element._done);
-			// Ajoute le noeud texte au noeud li 
+			// Ajoute le noeud texte à l'élément de la liste 
 			li.appendChild(txt);
+			// Ajoute le noeud boutton à l'élément de la liste
 			li.appendChild(btn);
-			// Ajoute le noeud txt+li au noeud ul
+			// Ajoute le noeud txt+li à la liste
 			node.appendChild(li)
 		});
 		return(node);
@@ -116,7 +117,7 @@ const toDo = class toDo
 		return(this._list[n]);
 	}
 
-	//Créer et ajoute une liste de tache (pour tester)
+	//Créer et ajoute un ensemble de taches (pour tester)
 	feed()
 	{
 		//Création de taches
@@ -134,7 +135,7 @@ const toDo = class toDo
 
 	stringify()
 	{
-		return(JSON.parse(this));
+		return(JSON.stringify(this));
 	}
 
 }
